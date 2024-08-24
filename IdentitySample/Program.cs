@@ -1,6 +1,10 @@
+using IdentitySample.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<DataBaseContext>(p => p.UseSqlServer("Server=.;Database=IdentitySample;User Id=sa;Password=123;TrustServerCertificate=True"));
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
