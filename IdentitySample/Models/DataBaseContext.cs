@@ -11,5 +11,14 @@ namespace IdentitySample.Models
         {
 
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<IdentityUserLogin<string>>().HasKey(p => new { p.ProviderKey, p.LoginProvider });
+            builder.Entity<IdentityUserRole<string>>().HasKey(p => new {p.UserId, p.RoleId});
+            builder.Entity<IdentityUserToken<string>>().HasKey(p => new { p.UserId, p.LoginProvider, p.Name });
+
+            builder.Entity<User>().Ignore(p => p.NormalizedEmail);
+        }
     }
 }
