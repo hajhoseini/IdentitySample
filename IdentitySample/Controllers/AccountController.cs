@@ -101,5 +101,12 @@ namespace IdentitySample.Controllers
 
             return View();
         }
+
+        [HttpGet]
+        public IActionResult LogOut()
+        {
+            _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
