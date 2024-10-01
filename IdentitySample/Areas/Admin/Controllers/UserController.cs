@@ -112,5 +112,42 @@ namespace IdentitySample.Areas.Admin.Controllers
 
             return View(dto);
         }
+
+        public IActionResult Delete(string id)
+        {
+            var user = _userManager.FindByIdAsync(id).Result;
+
+            UserDeleteDTO dto = new UserDeleteDTO()
+            {
+                Id = user.Id,
+                FullName = $"{user.FirstName} {user.LastName}",
+                Email = user.Email,
+                UserName = user.UserName,
+            };
+
+            return View(dto);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(UserDeleteDTO dto)
+        {
+            var user = _userManager.FindByIdAsync(dto.Id).Result;
+
+            var result = _userManager.DeleteAsync(user).Result;
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "User", new { area = "Admin" });
+            }
+
+            string message = "";
+            foreach (var item in result.Errors)
+            {
+                message += item.Description + Environment.NewLine;
+            }
+            TempData["Message"] = message;
+
+            return View(dto);
+        }
     }
 }
