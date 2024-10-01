@@ -68,5 +68,49 @@ namespace IdentitySample.Areas.Admin.Controllers
 
             return View();
         }
+
+        public IActionResult Edit(string id)
+        {
+            var user = _userManager.FindByIdAsync(id).Result;
+            UserEditDTO userEditDTO = new UserEditDTO()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                UserName = user.UserName,
+            };
+
+            return View(userEditDTO);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(UserEditDTO dto)
+        {
+            var user = _userManager.FindByIdAsync(dto.Id).Result;
+
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
+            user.PhoneNumber = dto.PhoneNumber;
+            user.Email = dto.Email;
+            user.UserName = dto.UserName;
+
+            var result = _userManager.UpdateAsync(user).Result;
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "User", new { area = "Admin" });
+            }
+
+            string message = "";
+            foreach (var item in result.Errors)
+            {
+                message += item.Description + Environment.NewLine;
+            }
+            TempData["Message"] = message;
+
+            return View(dto);
+        }
     }
 }
