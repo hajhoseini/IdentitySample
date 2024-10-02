@@ -1,6 +1,5 @@
 ﻿using IdentitySample.Areas.Admin.Models.DTOs;
 using IdentitySample.Areas.Admin.Models.DTOs.Role;
-using IdentitySample.Models.DTOs;
 using IdentitySample.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +10,12 @@ namespace IdentitySample.Areas.Admin.Controllers
     public class RoleController : Controller
     {
         private readonly RoleManager<Role> _roleManager;
+        private readonly UserManager<User> _userManager;
 
-        public RoleController(RoleManager<Role> roleManager)
+        public RoleController(RoleManager<Role> roleManager, UserManager<User> userManager)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -118,6 +119,24 @@ namespace IdentitySample.Areas.Admin.Controllers
             }
 
             ViewBag.Errors = result.Errors.ToList();
+
+            return View(dto);
+        }
+
+        public IActionResult UserInRole(string name)
+        {
+            var usersInRole = _userManager.GetUsersInRoleAsync(name).Result;
+
+            var dto = usersInRole.Select(p => new UserListDTO
+            {
+                Id = p.Id,
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                UserName = p.UserName,
+                PhoneNumber = p.PhoneNumber,
+                EmailConfirmed = p.EmailConfirmed,
+                AccessFailedCount = p.AccessFailedCount
+            }).ToList();
 
             return View(dto);
         }
