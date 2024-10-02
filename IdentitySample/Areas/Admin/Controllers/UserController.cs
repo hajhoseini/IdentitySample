@@ -1,8 +1,10 @@
 ﻿using IdentitySample.Areas.Admin.Models.DTOs;
+using IdentitySample.Areas.Admin.Models.DTOs.UserRole;
 using IdentitySample.Models.DTOs;
 using IdentitySample.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace IdentitySample.Areas.Admin.Controllers
 {
@@ -10,10 +12,12 @@ namespace IdentitySample.Areas.Admin.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
 
-        public UserController(UserManager<User> userManager)
+        public UserController(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Index()
@@ -148,6 +152,47 @@ namespace IdentitySample.Areas.Admin.Controllers
             TempData["Message"] = message;
 
             return View(dto);
+        }
+
+        public IActionResult AddUserRole(string id)
+        {
+            var roles = new List<SelectListItem>(
+                                    _roleManager.Roles.Select(p => new SelectListItem { Text = p.Name, Value = p.Name }
+                                )
+                            .ToList());
+
+            var user = _userManager.FindByIdAsync(id).Result;
+
+            var dto = new UserRoleCreateDTO
+            {
+                Id = id,
+                Roles = roles,
+                FullName = $"{user.FirstName} {user.LastName}",
+                Email = user.Email
+            };
+
+            return View(dto);
+        }
+
+        [HttpPost]
+        public IActionResult AddUserRole(UserRoleCreateDTO dto)
+        {
+            var user = _userManager.FindByIdAsync(dto.Id).Result;
+
+            var result = _userManager.AddToRoleAsync(user, dto.Role).Result;
+
+            return RedirectToAction("UserRoles", "User", new { id = dto.Id, area = "Admin" });
+        }
+
+        public IActionResult UserRoles(string id)
+        {
+            var user = _userManager.FindByIdAsync(id).Result;
+
+            ViewBag.UserInfo = $"User : {user.FirstName} {user.LastName} , Email : {user.Email}";
+
+            var roles = _userManager.GetRolesAsync(user).Result;
+
+            return View(roles);
         }
     }
 }

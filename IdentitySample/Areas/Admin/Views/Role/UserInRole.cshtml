@@ -1,18 +1,21 @@
 ﻿@model IEnumerable<IdentitySample.Areas.Admin.Models.DTOs.UserListDTO>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "UserInRole";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Index</h1>
+<h1>UserInRole</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>*@
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
@@ -38,6 +41,9 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.FirstName)
             </td>
             <td>
@@ -55,13 +61,11 @@
             <td>
                 @Html.DisplayFor(modelItem => item.AccessFailedCount)
             </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id, area = "Admin" }) |
+            @*<td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id, area = "Admin" }) |
-                @Html.ActionLink("Add Role", "AddUserRole", new { id = item.Id, area = "Admin" }) |
-                @Html.ActionLink("User Roles", "UserRoles", new { id = item.Id, area = "Admin" })
-            </td>
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>*@
         </tr>
 }
     </tbody>
