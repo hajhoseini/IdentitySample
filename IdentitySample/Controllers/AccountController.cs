@@ -272,7 +272,7 @@ namespace IdentitySample.Controllers
             else
             {
                 user.PhoneNumberConfirmed = true;
-                _userManager.UpdateAsync(user);
+                var resultUpdate = _userManager.UpdateAsync(user).Result;
             }
 
             return RedirectToAction(nameof(VerifySuccess));
