@@ -2,6 +2,7 @@
 using IdentitySample.Models.DTOs.Account;
 using IdentitySample.Models.Entities;
 using IdentitySample.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -218,6 +219,66 @@ namespace IdentitySample.Controllers
         }
 
         public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult SetPhoneNumber()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult SetPhoneNumber(SetPhoneNumberDTO dto)
+        {
+            string currentUser = User.Identity.Name;
+            var user = _userManager.FindByNameAsync(currentUser).Result;
+            var result = _userManager.SetPhoneNumberAsync(user, dto.PhoneNumber).Result;
+            string code = _userManager.GenerateChangePhoneNumberTokenAsync(user, dto.PhoneNumber).Result;
+
+            SMSService smsService = new SMSService();
+            smsService.Send(dto.PhoneNumber, code);
+
+            TempData["PhoneNumber"] = dto.PhoneNumber;
+
+            return RedirectToAction(nameof(VerifyPhoneNumber));
+        }
+
+        [Authorize]
+        public IActionResult VerifyPhoneNumber()
+        {
+            VerifyPhoneNumberDTO dto = new VerifyPhoneNumberDTO
+            {
+                PhoneNumber = TempData["PhoneNumber"].ToString()
+            };
+
+            return View(dto);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult VerifyPhoneNumber(VerifyPhoneNumberDTO dto)
+        {
+            string currentUser = User.Identity.Name;
+            var user = _userManager.FindByNameAsync(currentUser).Result;
+            bool result = _userManager.VerifyChangePhoneNumberTokenAsync(user, dto.Code, dto.PhoneNumber).Result;
+            if(!result)
+            {
+                ViewData["Message"] = $"کد وارد شده برای شماره {dto.PhoneNumber} اشتباه است";
+                return View(dto);
+            }
+            else
+            {
+                user.PhoneNumberConfirmed = true;
+                _userManager.UpdateAsync(user);
+            }
+
+            return RedirectToAction(nameof(VerifySuccess));
+        }
+
+        public IActionResult VerifySuccess()
         {
             return View();
         }
