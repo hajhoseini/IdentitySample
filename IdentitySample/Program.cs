@@ -1,3 +1,4 @@
+using IdentitySample.Helpers;
 using IdentitySample.Models;
 using IdentitySample.Models.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +12,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddIdentity<User, Role>().
                     AddEntityFrameworkStores<DataBaseContext>().
-                        AddDefaultTokenProviders();
+                        AddDefaultTokenProviders().
+                        AddErrorDescriber<CustomIdentityError>();
 
 var app = builder.Build();
 
