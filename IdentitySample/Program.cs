@@ -1,4 +1,4 @@
-using IdentitySample.Helpers;
+﻿using IdentitySample.Helpers;
 using IdentitySample.Models;
 using IdentitySample.Models.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +14,41 @@ builder.Services.AddIdentity<User, Role>().
                     AddEntityFrameworkStores<DataBaseContext>().
                         AddDefaultTokenProviders().
                         AddErrorDescriber<CustomIdentityError>();
+
+//builder.Services.Configure<IdentityOptions>(
+//                                        option =>
+//                                        {
+//                                            //User setting
+//                                            option.User.AllowedUserNameCharacters = "abcs";
+//                                            option.User.RequireUniqueEmail = true;
+
+//                                            //Password setting
+//                                            option.Password.RequireDigit = true; //حتما کاراکتر عددی در پسورد استفاده شود
+//                                            option.Password.RequireLowercase = true; //حتما کاراکتر حرف کوچک در پسورد استفاده شود
+//                                            option.Password.RequireUppercase = true; //حتما کاراکتر بزرگ در پسورد استفاده شود
+//                                            option.Password.RequireNonAlphanumeric = true; // !@#$%^&*()-+ //حتما کاراکتر خاص در پسورد استفاده شود
+//                                            option.Password.RequiredLength = 8; //حداقل طول پسورد
+//                                            option.Password.RequiredUniqueChars = 1; // چه تعداد کاراکتر غیرتکراری در پسورد لحاظ شود
+
+//                                            //Lockout setting
+//                                            option.Lockout.MaxFailedAccessAttempts = 3; //کاربر تا چند مرتبه پسورد را اشتباه بزند لاک می شود؟
+//                                            option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); // مدت زمان لاک شدن کاربر چقدر باشد
+
+//                                            //SignIn setting
+//                                            option.SignIn.RequireConfirmedAccount = true;
+//                                            option.SignIn.RequireConfirmedEmail = true;
+//                                            option.SignIn.RequireConfirmedPhoneNumber = true;
+//                                        });
+
+//builder.Services.ConfigureApplicationCookie(
+//                                        options =>
+//                                        {
+//                                            //Cookie setting
+//                                            options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+//                                            options.LoginPath = "/Account/Login";
+//                                            options.AccessDeniedPath = "/Account/AccessDenied";
+//                                            options.SlidingExpiration = true;
+//                                        });
 
 var app = builder.Build();
 
