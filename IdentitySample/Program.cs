@@ -51,6 +51,8 @@ builder.Services.AddIdentity<User, Role>().
 //                                            options.SlidingExpiration = true;
 //                                        });
 
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, AddMyClaims>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
