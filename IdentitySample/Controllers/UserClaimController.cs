@@ -47,5 +47,21 @@ namespace IdentitySample.Controllers
 
             return View();
         }
+
+        public IActionResult Delete(string claimType)
+        {
+            var user = _userManager.GetUserAsync(User).Result;
+            Claim claim = User.Claims.Where(p => p.Type == claimType).FirstOrDefault();
+            if(claim != null)
+            {
+                var result = _userManager.RemoveClaimAsync(user, claim).Result;
+                if(result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }
