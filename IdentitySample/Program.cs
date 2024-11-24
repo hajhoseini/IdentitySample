@@ -1,6 +1,7 @@
 ﻿using IdentitySample.Helpers;
 using IdentitySample.Models;
 using IdentitySample.Models.Entities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddIdentity<User, Role>().
                     AddEntityFrameworkStores<DataBaseContext>().
                         AddDefaultTokenProviders().
+                        AddRoles<Role>().
                         AddErrorDescriber<CustomIdentityError>()
                         .AddPasswordValidator<MyPasswordValidator>();
 
@@ -51,7 +53,8 @@ builder.Services.AddIdentity<User, Role>().
 //                                            options.SlidingExpiration = true;
 //                                        });
 
-builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, AddMyClaims>();
+//builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, AddMyClaims>();
+builder.Services.AddScoped<IClaimsTransformation, AddClaims>();
 
 var app = builder.Build();
 
