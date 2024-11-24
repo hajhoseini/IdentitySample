@@ -13,6 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddIdentity<User, Role>().
                     AddEntityFrameworkStores<DataBaseContext>().
                         AddDefaultTokenProviders().
+                        AddRoles<Role>().
                         AddErrorDescriber<CustomIdentityError>()
                         .AddPasswordValidator<MyPasswordValidator>();
 
@@ -51,7 +52,7 @@ builder.Services.AddIdentity<User, Role>().
 //                                            options.SlidingExpiration = true;
 //                                        });
 
-builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, AddMyClaims>();
+//builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, AddMyClaims>();
 
 var app = builder.Build();
 
