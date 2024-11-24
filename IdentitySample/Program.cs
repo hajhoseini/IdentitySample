@@ -1,6 +1,7 @@
 ﻿using IdentitySample.Helpers;
 using IdentitySample.Models;
 using IdentitySample.Models.Entities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,6 +54,7 @@ builder.Services.AddIdentity<User, Role>().
 //                                        });
 
 //builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, AddMyClaims>();
+builder.Services.AddScoped<IClaimsTransformation, AddClaims>();
 
 var app = builder.Build();
 
