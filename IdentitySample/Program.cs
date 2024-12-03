@@ -18,6 +18,15 @@ builder.Services.AddIdentity<User, Role>().
                         AddErrorDescriber<CustomIdentityError>()
                         .AddPasswordValidator<MyPasswordValidator>();
 
+builder.Services.AddAuthorization(options =>
+                    {
+                        options.AddPolicy("BuyerPolicy", policy =>
+                        {
+                            policy.RequireClaim("Buyer");
+                        });
+                    }
+);
+
 //builder.Services.Configure<IdentityOptions>(
 //                                        option =>
 //                                        {
