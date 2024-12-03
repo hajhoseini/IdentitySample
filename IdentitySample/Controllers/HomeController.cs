@@ -35,5 +35,11 @@ namespace IdentitySample.Controllers
         {
             return "شما خریدار هستید";
         }
+
+        [Authorize(Policy = "BloodType")]
+        public string Blood()
+        {
+            return "Ap and Op";
+        }
     }
 }

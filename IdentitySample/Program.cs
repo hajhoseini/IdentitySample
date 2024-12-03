@@ -24,6 +24,10 @@ builder.Services.AddAuthorization(options =>
                         {
                             policy.RequireClaim("Buyer");
                         });
+                        options.AddPolicy("BloodType", policy =>
+                        {
+                            policy.RequireClaim("Blood", "Ap", "Op");
+                        });
                     }
 );
 
