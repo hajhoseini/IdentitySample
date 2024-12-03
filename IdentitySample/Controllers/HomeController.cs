@@ -1,4 +1,5 @@
 ﻿using IdentitySample.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -27,6 +28,18 @@ namespace IdentitySample.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [Authorize(Policy = "BuyerPolicy")]
+        public string JustBayer()
+        {
+            return "شما خریدار هستید";
+        }
+
+        [Authorize(Policy = "BloodType")]
+        public string Blood()
+        {
+            return "Ap and Op";
         }
     }
 }

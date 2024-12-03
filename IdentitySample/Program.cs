@@ -18,6 +18,19 @@ builder.Services.AddIdentity<User, Role>().
                         AddErrorDescriber<CustomIdentityError>()
                         .AddPasswordValidator<MyPasswordValidator>();
 
+builder.Services.AddAuthorization(options =>
+                    {
+                        options.AddPolicy("BuyerPolicy", policy =>
+                        {
+                            policy.RequireClaim("Buyer");
+                        });
+                        options.AddPolicy("BloodType", policy =>
+                        {
+                            policy.RequireClaim("Blood", "Ap", "Op");
+                        });
+                    }
+);
+
 //builder.Services.Configure<IdentityOptions>(
 //                                        option =>
 //                                        {
