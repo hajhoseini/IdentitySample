@@ -20,5 +20,7 @@ namespace IdentitySample.Models
 
             builder.Entity<User>().Ignore(p => p.NormalizedEmail);
         }
+
+        public DbSet<Blog> Blogs { get; set; }
     }
 }

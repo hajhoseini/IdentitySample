@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<DataBaseContext>(p => p.UseSqlServer("Server=.;Database=IdentitySample;User Id=sa;Password=123;TrustServerCertificate=True"));
+builder.Services.AddDbContext<DataBaseContext>(p => p.UseSqlServer("Server=.;Database=IdentitySample;User Id=sa;Password=.;TrustServerCertificate=True"));
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddIdentity<User, Role>().
