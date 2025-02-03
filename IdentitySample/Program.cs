@@ -21,6 +21,10 @@ builder.Services.AddIdentity<User, Role>().
 
 builder.Services.AddAuthorization(options =>
                     {
+                        options.AddPolicy("AdminUsers", policy =>
+                        {
+                            policy.RequireRole("Admin");
+                        });
                         options.AddPolicy("BuyerPolicy", policy =>
                         {
                             policy.RequireClaim("Buyer");
