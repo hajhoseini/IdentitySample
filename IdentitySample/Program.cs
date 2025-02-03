@@ -2,6 +2,7 @@
 using IdentitySample.Models;
 using IdentitySample.Models.Entities;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +28,10 @@ builder.Services.AddAuthorization(options =>
                         options.AddPolicy("BloodType", policy =>
                         {
                             policy.RequireClaim("Blood", "Ap", "Op");
+                        });
+                        options.AddPolicy("IsBlogForUser", policy =>
+                        {
+                            policy.AddRequirements(new BlogRequirement());
                         });
                     }
 );
@@ -68,6 +73,8 @@ builder.Services.AddAuthorization(options =>
 
 //builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, AddMyClaims>();
 builder.Services.AddScoped<IClaimsTransformation, AddClaims>();
+//builder.Services.AddSingleton<IAuthorizationHandler, UserCreditHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, IsBlogForUserAuthorizationHandler>();
 
 var app = builder.Build();
 

@@ -1,21 +1,25 @@
 ﻿using IdentitySample.Models;
 using IdentitySample.Models.DTOs;
 using IdentitySample.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentitySample.Controllers
 {
+    //[Authorize(Roles = "Admin")]
     public class BlogController : Controller
     {
         private readonly DataBaseContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly IAuthorizationService _authorizationService;
 
-        public BlogController(DataBaseContext context, UserManager<User> userManager)
+        public BlogController(DataBaseContext context, UserManager<User> userManager, IAuthorizationService authorizationService)
         {
             _context = context;
             _userManager = userManager;
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index()
@@ -63,6 +67,18 @@ namespace IdentitySample.Controllers
                             UserId = p.UserId,
                             UserName = p.User.UserName
                         }).FirstOrDefault();
+
+            #region Check Access
+            var result = _authorizationService.AuthorizeAsync(User, blog, "IsBlogForUser").Result;
+            if (result.Succeeded)
+            {
+                return View(blog);
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+            #endregion
 
             return View(blog);
         }
