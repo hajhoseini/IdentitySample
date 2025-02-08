@@ -5,6 +5,7 @@ using IdentitySample.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace IdentitySample.Controllers
 {
@@ -380,6 +381,67 @@ namespace IdentitySample.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        public IActionResult ExternalLogin(string returnUrl)
+        {
+            string url = Url.Action(nameof(CallBack), "Account", new 
+                            {
+                                returnUrl
+                            });
+
+            string provider = "Google";
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, url);
+
+            return new ChallengeResult(provider, properties);
+        }
+
+        public IActionResult CallBack(string returnUrl)
+        {
+            var loingInfo = _signInManager.GetExternalLoginInfoAsync().Result;
+
+            string email = loingInfo.Principal.FindFirst(ClaimTypes.Email)?.Value ?? null;
+            if(email == null)
+            { 
+                return BadRequest();
+            }
+            string firstName = loingInfo.Principal.FindFirst(ClaimTypes.GivenName)?.Value ?? null;
+            string lastName = loingInfo.Principal.FindFirst(ClaimTypes.Surname)?.Value ?? null;
+
+            var signin = _signInManager.ExternalLoginSignInAsync("Google", loingInfo.ProviderKey, isPersistent: false, bypassTwoFactor: true).Result;
+            if(signin.Succeeded)
+            {
+                if(Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect("~/");
+                }
+                return RedirectToAction("Index", "Home");
+            }
+            else if(signin.RequiresTwoFactor)
+            {
+                //...
+            }
+
+            var user = _userManager.FindByEmailAsync(email).Result;
+            if(user == null)
+            {
+                User newUser = new User()
+                {
+                    UserName = email,
+                    Email = email,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    EmailConfirmed = true
+                };
+
+                var resultAddUser = _userManager.CreateAsync(newUser).Result;
+                user = newUser;
+            }
+
+            var resultAddLogin = _userManager.AddLoginAsync(user, loingInfo).Result;// add to table : UserLogins
+            _signInManager.SignInAsync(user, isPersistent: false).Wait();
+
+            return Redirect("/");
         }
     }
 }

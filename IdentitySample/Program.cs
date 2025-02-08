@@ -19,6 +19,12 @@ builder.Services.AddIdentity<User, Role>().
                         AddErrorDescriber<CustomIdentityError>()
                         .AddPasswordValidator<MyPasswordValidator>();
 
+builder.Services.AddAuthentication().AddGoogle(options =>
+{
+    options.ClientId = "123";
+    options.ClientSecret = "456";
+});
+
 builder.Services.AddAuthorization(options =>
                     {
                         options.AddPolicy("AdminUsers", policy =>
