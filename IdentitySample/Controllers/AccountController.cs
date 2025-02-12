@@ -112,8 +112,19 @@ namespace IdentitySample.Controllers
             {
                 //return Redirect(dto.ReturnUrl);
 
-                //code 1
-                return LocalRedirect(dto.ReturnUrl);
+                ////code 1
+                //return LocalRedirect(dto.ReturnUrl);
+
+                //code 2
+                if (Url.IsLocalUrl(dto.ReturnUrl))
+                {
+                    return Redirect(dto.ReturnUrl);
+                }
+                else
+                {
+                    //log                                                                                                                                                                                                     
+                    return Redirect("/");
+                }
             }
 
             if(result.RequiresTwoFactor)
