@@ -40,6 +40,7 @@ namespace IdentitySample.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(BlogDTO dto)
         {
             var user = _userManager.GetUserAsync(User).Result;
