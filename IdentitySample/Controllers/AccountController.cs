@@ -110,7 +110,10 @@ namespace IdentitySample.Controllers
 
             if(result.Succeeded)
             {
-                return Redirect(dto.ReturnUrl);
+                //return Redirect(dto.ReturnUrl);
+
+                //code 1
+                return LocalRedirect(dto.ReturnUrl);
             }
 
             if(result.RequiresTwoFactor)
